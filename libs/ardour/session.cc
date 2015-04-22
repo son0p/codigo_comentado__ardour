@@ -1312,7 +1312,8 @@ Session::auto_punch_start_changed (Location* location)
 void
 Session::auto_punch_end_changed (Location* location)
 {
-	framepos_t when_to_stop = location->end();
+	// location->end() is the last sample within the range - we want to capture it, so we must punch out one sample later
+	framepos_t when_to_stop = location->end() + 1;
 	// when_to_stop += _worst_output_latency + _worst_input_latency;
 	replace_event (SessionEvent::PunchOut, when_to_stop);
 }
@@ -1320,7 +1321,8 @@ Session::auto_punch_end_changed (Location* location)
 void
 Session::auto_punch_changed (Location* location)
 {
-	framepos_t when_to_stop = location->end();
+	// location->end() is the last sample within the range - we want to capture it, so we must punch out one sample later
+	framepos_t when_to_stop = location->end() + 1;
 
 	replace_event (SessionEvent::PunchIn, location->start());
 	//when_to_stop += _worst_output_latency + _worst_input_latency;
