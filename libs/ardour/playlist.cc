@@ -927,6 +927,8 @@ Playlist::flush_notifications (bool from_undo)
 			 /* coverage will return OverlapStart if the start coincides
 			    with the end point. we do not partition such a region,
 			    so catch this special case.
+			    XXX is this still true? I assume it's because we don't want
+			    to end up with 1-sample long regions
 			 */
 
 			 if (current->first_frame() >= end) {
