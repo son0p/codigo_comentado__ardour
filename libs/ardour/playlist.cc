@@ -1986,12 +1986,13 @@ Playlist::find_next_region (framepos_t frame, RegionPoint point, int dir)
 				 }
 			 }
 
-			 if (r->last_frame () > frame) {
+			 framepos_t after_end = r->last_frame () + 1;
+			 if (after_end > frame) {
 
-				 distance = r->last_frame () - frame;
+				 distance = after_end - frame;
 
 				 if (distance < closest) {
-					 ret = r->last_frame ();
+					 ret = after_end;
 					 closest = distance;
 				 }
 			 }
@@ -2004,12 +2005,13 @@ Playlist::find_next_region (framepos_t frame, RegionPoint point, int dir)
 			 boost::shared_ptr<Region> r = (*i);
 			 frameoffset_t distance;
 
-			 if (r->last_frame() < frame) {
+			 framepos_t after_end = r->last_frame () + 1;
+			 if (after_end < frame) {
 
-				 distance = frame - r->last_frame();
+				 distance = frame - after_end;
 
 				 if (distance < closest) {
-					 ret = r->last_frame();
+					 ret = after_end;
 					 closest = distance;
 				 }
 			 }
