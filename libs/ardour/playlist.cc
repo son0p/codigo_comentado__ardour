@@ -674,7 +674,8 @@ Playlist::flush_notifications (bool from_undo)
 
 	 framepos_t pos = position;
 
-	 if (times == 1 && auto_partition){
+	 if (times == 1 && auto_partition) {
+		 // partition lower regions to end just before start of region being added, and begin again just after end
 		 partition(pos - 1, (pos + region->length()), true);
 	 }
 
