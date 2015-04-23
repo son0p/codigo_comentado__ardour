@@ -1183,7 +1183,7 @@ Playlist::flush_notifications (bool from_undo)
 		 return boost::shared_ptr<Playlist>();
 	 }
 
-	 partition_internal (start, start+cnt-1, true, thawlist);
+	 partition_internal (start, start+cnt, true, thawlist);
 
 	 for (RegionList::iterator i = thawlist.begin(); i != thawlist.end(); ++i) {
 		 (*i)->resume_property_changes();
