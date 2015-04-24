@@ -4647,9 +4647,9 @@ SelectionDrag::motion (GdkEvent* event, bool first_move)
 
 		if (pending_position < grab) {
 			start = pending_position;
-			end = grab;
+			end = grab - 1;
 		} else {
-			end = pending_position;
+			end = pending_position - 1;
 			start = grab;
 		}
 
@@ -4749,10 +4749,10 @@ SelectionDrag::motion (GdkEvent* event, bool first_move)
 		start = _editor->selection->time[_editor->clicked_selection].start;
 		end = _editor->selection->time[_editor->clicked_selection].end;
 
-		if (pending_position < start) {
+		if (pending_position - 1 < start) {
 			end = start;
 		} else {
-			end = pending_position;
+			end = pending_position -1;
 		}
 
 		break;
