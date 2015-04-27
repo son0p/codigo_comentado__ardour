@@ -726,7 +726,7 @@ Editor::build_region_boundary_cache ()
 				break;
 
 			case End:
-				rpos = r->last_frame();
+				rpos = r->last_frame() + 1;
 				break;
 
 			case SyncPoint:
@@ -812,7 +812,7 @@ Editor::find_next_region (framepos_t frame, RegionPoint point, int32_t dir, Trac
 			break;
 
 		case End:
-			rpos = r->last_frame ();
+			rpos = r->last_frame () + 1;
 			break;
 
 		case SyncPoint:
@@ -982,7 +982,7 @@ Editor::cursor_to_region_point (EditorCursor* cursor, RegionPoint point, int32_t
 		break;
 
 	case End:
-		pos = r->last_frame ();
+		pos = r->last_frame () + 1;
 		break;
 
 	case SyncPoint:
