@@ -196,6 +196,10 @@ class LIBARDOUR_API Region
 		return Evoral::coverage (first_frame(), last_frame(), start, end);
 	}
 
+	Evoral::OverlapType coverage (const Region &other) const {
+		return Evoral::coverage (first_frame(), last_frame(), other.first_frame(), other.last_frame());
+	}
+
 	bool equivalent (boost::shared_ptr<const Region>) const;
 	bool size_equivalent (boost::shared_ptr<const Region>) const;
 	bool overlap_equivalent (boost::shared_ptr<const Region>) const;
