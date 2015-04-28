@@ -232,7 +232,7 @@ ExportTimespanSelector::construct_label (ARDOUR::Location const * location) cons
 std::string
 ExportTimespanSelector::construct_length (ARDOUR::Location const * location) const
 {
-	if (location->length() == 0) {
+	if (location->length_inclusive() == 0) {
 		return "";
 	}
 
@@ -240,23 +240,23 @@ ExportTimespanSelector::construct_length (ARDOUR::Location const * location) con
 
 	switch (state->time_format) {
 	case AudioClock::BBT:
-		s << bbt_str (location->length ());
+		s << bbt_str (location->length_inclusive ());
 		break;
 
 	case AudioClock::Timecode:
 	{
 		Timecode::Time tc;
-		_session->timecode_duration (location->length(), tc);
+		_session->timecode_duration (location->length_inclusive(), tc);
 		tc.print (s);
 		break;
 	}
 
 	case AudioClock::MinSec:
-		s << ms_str (location->length ());
+		s << ms_str (location->length_inclusive ());
 		break;
 
 	case AudioClock::Frames:
-		s << location->length ();
+		s << location->length_inclusive ();
 		break;
 	}
 

@@ -416,10 +416,10 @@ Editor::nudge_forward (bool next, bool force_playhead)
 					if (next) {
 						distance = next_distance;
 					}
-					if (max_framepos - distance > loc->start() + loc->length()) {
+					if (max_framepos - distance > loc->start() + loc->length_inclusive()) {
 						loc->set_start (loc->start() + distance);
 					} else {
-						loc->set_start (max_framepos - loc->length());
+						loc->set_start (max_framepos - loc->length_inclusive());
 					}
 				} else {
 					distance = get_nudge_distance (loc->end(), next_distance);
@@ -513,10 +513,10 @@ Editor::nudge_backward (bool next, bool force_playhead)
 						distance = next_distance;
 					}
 
-					if (distance < loc->end() - loc->length()) {
+					if (distance < loc->end() - loc->length_inclusive()) {
 						loc->set_end (loc->end() - distance);
 					} else {
-						loc->set_end (loc->length());
+						loc->set_end (loc->length_inclusive());
 					}
 				}
 
@@ -1337,7 +1337,7 @@ Editor::cursor_align (bool playhead_to_edit)
 				loc->set_start (playhead_cursor->current_frame ());
 			} else {
 				loc->set (playhead_cursor->current_frame (),
-					  playhead_cursor->current_frame () + loc->length());
+					  playhead_cursor->current_frame () + loc->length_inclusive());
 			}
 		}
 	}

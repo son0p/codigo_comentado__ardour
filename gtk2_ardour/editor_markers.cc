@@ -1283,7 +1283,7 @@ Editor::marker_menu_zoom_to_range ()
 		return;
 	}
 
-	framecnt_t const extra = l->length() * 0.05;
+	framecnt_t const extra = l->length_inclusive() * 0.05;
 	framepos_t a = l->start ();
 	if (a >= extra) {
 		a -= extra;

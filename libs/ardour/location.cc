@@ -424,7 +424,7 @@ Location::move_to (framepos_t pos)
 
 	if (_start != pos) {
 		_start = pos;
-		_end = _start + length();
+		_end = _start + length_inclusive();
 		recompute_bbt_from_frames ();
 
 		changed (this); /* EMIT SIGNAL */
@@ -475,7 +475,7 @@ Location::set_is_range_marker (bool yn, void*)
 void
 Location::set_skip (bool yn)
 {
-        if (is_range_marker() && length() > 0) {
+        if (is_range_marker() && length_inclusive() > 0) {
                 if (set_flag_internal (yn, IsSkip)) {
                         flags_changed (this);
                         FlagsChanged ();
@@ -486,7 +486,7 @@ Location::set_skip (bool yn)
 void
 Location::set_skipping (bool yn)
 {
-        if (is_range_marker() && is_skip() && length() > 0) {
+        if (is_range_marker() && is_skip() && length_inclusive() > 0) {
                 if (set_flag_internal (yn, IsSkipping)) {
                         flags_changed (this);
                         FlagsChanged ();

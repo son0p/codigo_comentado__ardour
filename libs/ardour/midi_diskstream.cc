@@ -1421,7 +1421,7 @@ MidiDiskstream::get_playback (MidiBuffer& dst, framecnt_t nframes)
 		framepos_t effective_start;
 
 		if (playback_sample >= loc->end()) {
-			effective_start = loc->start() + ((playback_sample - loc->end()) % loc->length());
+			effective_start = loc->start() + ((playback_sample - loc->end()) % loc->length_inclusive());
 		} else {
 			effective_start = playback_sample;
 		}

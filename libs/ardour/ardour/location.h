@@ -70,7 +70,8 @@ class LIBARDOUR_API Location : public SessionHandleRef, public PBD::StatefulDest
 
 	framepos_t start() const  { return _start; }
 	framepos_t end() const { return _end; }
-	framecnt_t length() const { return _end - _start; }
+	framecnt_t length_exclusive() const { return _end - _start - 1; }
+	framecnt_t length_inclusive() const { return _end - _start; }
 
 	int set_start (framepos_t s, bool force = false, bool allow_bbt_recompute = true);
 	int set_end (framepos_t e, bool force = false, bool allow_bbt_recompute = true);

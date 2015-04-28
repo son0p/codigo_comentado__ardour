@@ -305,7 +305,7 @@ LocationEditRow::set_location (Location *loc)
 		}
 
 		end_clock.set (location->end(), true);
-		length_clock.set (location->length(), true);
+		length_clock.set (location->length_inclusive(), true);
 
 		end_clock.show();
 		length_clock.show();
@@ -602,7 +602,7 @@ LocationEditRow::end_changed ()
 	i_am_the_modifier++;
 
 	end_clock.set (location->end());
-	length_clock.set (location->length());
+	length_clock.set (location->length_inclusive());
 
 	i_am_the_modifier--;
 }
@@ -651,7 +651,7 @@ LocationEditRow::location_changed ()
 
 	start_clock.set (location->start());
 	end_clock.set (location->end());
-	length_clock.set (location->length());
+	length_clock.set (location->length_inclusive());
 
 	set_clock_editable_status ();
 
