@@ -140,6 +140,7 @@ class LIBARDOUR_API Region
 
 	framepos_t first_frame () const { return _position; }
 	framepos_t last_frame ()  const { return _position + _length - 1; }
+	framepos_t end_frame ()   const { return _position + _length; }
 
 	/** Return the earliest possible value of _position given the
 	 *  value of _start within the region's sources

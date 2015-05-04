@@ -1950,7 +1950,7 @@ RegionSpliceDrag::motion (GdkEvent* event, bool)
 		}
 
 		if (dir > 0) {
-			if (pf < (*i)->region()->last_frame() + 1) {
+			if (pf < (*i)->region()->end_frame()) {
 				continue;
 			}
 		} else {
@@ -2769,7 +2769,7 @@ TrimDrag::motion (GdkEvent* event, bool first_move)
 				if (arv) {
 					boost::shared_ptr<AudioRegion> ar (arv->audio_region());
 					framecnt_t len = ar->fade_out()->back()->when;
-					framecnt_t diff = 1 + ar->last_frame() - i->initial_end;
+					framecnt_t diff = ar->end_frame() - i->initial_end;
 					framepos_t new_length = len + diff;
 					i->anchored_fade_length = min (ar->length(), new_length);
 					//i->anchored_fade_length = ar->verify_xfade_bounds (new_length, false  /*END*/ );

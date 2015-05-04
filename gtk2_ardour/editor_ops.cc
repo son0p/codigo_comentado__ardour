@@ -726,7 +726,7 @@ Editor::build_region_boundary_cache ()
 				break;
 
 			case End:
-				rpos = r->last_frame() + 1;
+				rpos = r->end_frame();
 				break;
 
 			case SyncPoint:
@@ -812,7 +812,7 @@ Editor::find_next_region (framepos_t frame, RegionPoint point, int32_t dir, Trac
 			break;
 
 		case End:
-			rpos = r->last_frame () + 1;
+			rpos = r->end_frame();
 			break;
 
 		case SyncPoint:
@@ -982,7 +982,7 @@ Editor::cursor_to_region_point (EditorCursor* cursor, RegionPoint point, int32_t
 		break;
 
 	case End:
-		pos = r->last_frame () + 1;
+		pos = r->end_frame();
 		break;
 
 	case SyncPoint:
@@ -1173,7 +1173,7 @@ Editor::selected_marker_to_region_point (RegionPoint point, int32_t dir)
 		break;
 
 	case End:
-		pos = r->last_frame ();
+		pos = r->end_frame();
 		break;
 
 	case SyncPoint:
@@ -1868,8 +1868,8 @@ Editor::get_selection_extents ( framepos_t &start, framepos_t &end )
 				start = (*i)->region()->position();
 			}
 
-			if ((*i)->region()->last_frame() + 1 > end) {
-				end = (*i)->region()->last_frame() + 1;
+			if ((*i)->region()->end_frame() > end) {
+				end = (*i)->region()->end_frame();
 			}
 		}
 
@@ -2801,8 +2801,8 @@ Editor::play_selected_region ()
 		if ((*i)->region()->position() < start) {
 			start = (*i)->region()->position();
 		}
-		if ((*i)->region()->last_frame() + 1 > end) {
-			end = (*i)->region()->last_frame() + 1;
+		if ((*i)->region()->end_frame() > end) {
+			end = (*i)->region()->end_frame();
 		}
 	}
 
@@ -3190,7 +3190,7 @@ Editor::separate_under_selected_regions ()
 		}
 
 		//Partition on the region bounds
-		playlist->partition ((*rl)->first_frame() - 1, (*rl)->last_frame() + 1, true);
+		playlist->partition ((*rl)->first_frame() - 1, (*rl)->end_frame(), true);
 
 		//Re-add region that was just removed due to the partition operation
 		playlist->add_region( (*rl), (*rl)->first_frame() );
@@ -3780,7 +3780,7 @@ Editor::trim_to_region(bool forward)
 			continue;
 		    }
 
-		    region->trim_front((framepos_t) ((next_region->last_frame() + 1) * speed));
+		    region->trim_front((framepos_t) ((next_region->end_frame()) * speed));
 
 		    arv->region_changed (ARDOUR::bounds_change);
 		}
@@ -6168,7 +6168,7 @@ Editor::set_tempo_from_region ()
 
 	RegionView* rv = rs.front();
 
-	define_one_bar (rv->region()->position(), rv->region()->last_frame() + 1);
+	define_one_bar (rv->region()->position(), rv->region()->end_frame());
 }
 
 void
@@ -6439,7 +6439,7 @@ Editor::split_region_at_points (boost::shared_ptr<Region> r, AnalysisFeatureList
 	PropertyList plist;
 
 	plist.add (ARDOUR::Properties::start, r->start() + pos);
-	plist.add (ARDOUR::Properties::length, r->last_frame() - (r->position() + pos) + 1);
+	plist.add (ARDOUR::Properties::length, r->end_frame() - (r->position() + pos));
 	plist.add (ARDOUR::Properties::name, new_name);
 	plist.add (ARDOUR::Properties::layer, 0);
 

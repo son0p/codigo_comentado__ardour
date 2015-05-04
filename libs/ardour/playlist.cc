@@ -1989,13 +1989,12 @@ Playlist::find_next_region (framepos_t frame, RegionPoint point, int dir)
 				 }
 			 }
 
-			 framepos_t after_end = r->last_frame () + 1;
-			 if (after_end > frame) {
+			 if (r->end_frame() > frame) {
 
-				 distance = after_end - frame;
+				 distance = r->end_frame() - frame;
 
 				 if (distance < closest) {
-					 ret = after_end;
+					 ret = r->end_frame();
 					 closest = distance;
 				 }
 			 }
@@ -2008,13 +2007,12 @@ Playlist::find_next_region (framepos_t frame, RegionPoint point, int dir)
 			 boost::shared_ptr<Region> r = (*i);
 			 frameoffset_t distance;
 
-			 framepos_t after_end = r->last_frame () + 1;
-			 if (after_end < frame) {
+			 if (r->end_frame() < frame) {
 
-				 distance = frame - after_end;
+				 distance = frame - r->end_frame();
 
 				 if (distance < closest) {
-					 ret = after_end;
+					 ret = r->end_frame();
 					 closest = distance;
 				 }
 			 }
@@ -2719,7 +2717,7 @@ Playlist::shuffle (boost::shared_ptr<Region> region, int dir)
 
 						framepos_t new_pos;
 
-						if ((*next)->position() != region->last_frame() + 1) {
+						if ((*next)->position() != region->end_frame()) {
 							/* they didn't used to touch, so after shuffle,
 							   just have them swap positions.
 							*/
@@ -2761,7 +2759,7 @@ Playlist::shuffle (boost::shared_ptr<Region> region, int dir)
 						}
 
 						framepos_t new_pos;
-						if (region->position() != (*prev)->last_frame() + 1) {
+						if (region->position() != (*prev)->end_frame()) {
 							/* they didn't used to touch, so after shuffle,
 							   just have them swap positions.
 							*/
