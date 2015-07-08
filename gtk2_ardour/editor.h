@@ -54,6 +54,7 @@
 #include "ardour_button.h"
 #include "ardour_dialog.h"
 #include "ardour_dropdown.h"
+#include "binding_owners.h"
 #include "public_editor.h"
 #include "editing.h"
 #include "enums.h"
@@ -141,6 +142,8 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	void             set_session (ARDOUR::Session *);
 	ARDOUR::Session* session() const { return _session; }
 
+	Gtk::Window* use_own_window ();
+	
 	void             first_idle ();
 	virtual bool     have_idled () const { return _have_idled; }
 
@@ -282,10 +285,6 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	void export_range ();
 	void export_region ();
 
-	void add_transport_frame (Gtk::Container&);
-	void add_toplevel_menu (Gtk::Container&);
-	Gtk::HBox& get_status_bar_packer()  { return status_bar_hpacker; }
-
 	void               set_zoom_focus (Editing::ZoomFocus);
 	Editing::ZoomFocus get_zoom_focus () const { return zoom_focus; }
 	framecnt_t         get_current_zoom () const { return samples_per_pixel; }
@@ -361,8 +360,6 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	/* floating windows/transient */
 
 	void ensure_float (Gtk::Window&);
-
-	void show_window ();
 
 	void scroll_tracks_down_line ();
 	void scroll_tracks_up_line ();
@@ -550,6 +547,7 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	void color_handler ();
 
 	bool                 constructed;
+	Gtkmm2ext::Bindings  key_bindings;
 
 	// to keep track of the playhead position for control_scroll
 	boost::optional<framepos_t> _control_scroll_target;
@@ -772,8 +770,7 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	void timeaxisview_deleted (TimeAxisView *);
 
 	Gtk::HBox           global_hpacker;
-	Gtk::VBox           global_vpacker;
-	Gtk::VBox           vpacker;
+	VBoxWithBindings    global_vpacker;
 
 	/* Cursor stuff.  Do not use directly, use via CursorContext. */
 	friend class CursorContext;
@@ -809,14 +806,6 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	Gtk::VBox                 time_bars_vbox;
 
 	ArdourCanvas::Pixbuf     *logo_item;
-#if 0    
-    /* these will be needed when we have canvas rulers */
-	ArdourCanvas::Container      *minsec_group;
-	ArdourCanvas::Container      *bbt_group;
-	ArdourCanvas::Container      *timecode_group;
-	ArdourCanvas::Container      *frame_group;
-#endif
-
 	ArdourCanvas::Container      *tempo_group;
 	ArdourCanvas::Container      *meter_group;
 	ArdourCanvas::Container      *marker_group;
@@ -1182,7 +1171,6 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 
 	void load_bindings ();
 	Gtkmm2ext::ActionMap editor_action_map;
-	Gtkmm2ext::Bindings  key_bindings;
 
 	/* CUT/COPY/PASTE */
 
@@ -1855,10 +1843,6 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	ArdourCanvas::Rectangle*  cd_marker_bar_drag_rect;
 	ArdourCanvas::Rectangle*  range_bar_drag_rect;
 	ArdourCanvas::Rectangle*  transport_bar_drag_rect;
-
-#ifdef GTKOSX
-	ArdourCanvas::Rectangle     *bogus_background_rect;
-#endif
 	ArdourCanvas::Rectangle     *transport_bar_range_rect;
 	ArdourCanvas::Rectangle     *transport_bar_preroll_rect;
 	ArdourCanvas::Rectangle     *transport_bar_postroll_rect;
@@ -2117,8 +2101,6 @@ class Editor : public PublicEditor, public PBD::ScopedConnectionList, public ARD
 	Glib::RefPtr<Gtk::Action>              selection_redo_action;
 
 	void history_changed ();
-
-	Gtk::HBox      status_bar_hpacker;
 
 	Editing::EditPoint _edit_point;
 
