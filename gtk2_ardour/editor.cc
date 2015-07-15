@@ -748,7 +748,7 @@ Editor::Editor ()
 	/* when we start using our own keybinding system for the editor, this
 	 * will be uncommented
 	 */
-	// load_bindings ();
+	load_bindings ();
 
 	setup_toolbar ();
 
