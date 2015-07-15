@@ -1004,8 +1004,6 @@ ARDOUR_UI::starting ()
 
 	use_config ();
 
-	goto_editor_window ();
-
 	WM::Manager::instance().show_visible ();
 
 	/* We have to do this here since goto_editor_window() ends up calling show_all() on the
@@ -3153,8 +3151,6 @@ ARDOUR_UI::close_session()
 	if (get_session_parameters (true, false)) {
 		exit (1);
 	}
-
-	goto_editor_window ();
 }
 
 /** @param snap_name Snapshot name (without .ardour suffix).
@@ -3290,8 +3286,6 @@ ARDOUR_UI::load_session (const std::string& path, const std::string& snap_name, 
 	set_session (new_session);
 
 	session_loaded = true;
-
-	goto_editor_window ();
 
 	if (_session) {
 		_session->set_clean ();
