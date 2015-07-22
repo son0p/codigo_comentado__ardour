@@ -4172,9 +4172,12 @@ Editor::maximise_editing_space ()
 		return;
 	}
 
-	current_toplevel()->fullscreen ();
+	Gtk::Window* toplevel = current_toplevel();
 
-	_maximised = true;
+	if (toplevel) {
+		toplevel->fullscreen ();
+		_maximised = true;
+	}
 }
 
 void
@@ -4184,9 +4187,12 @@ Editor::restore_editing_space ()
 		return;
 	}
 
-	current_toplevel()->unfullscreen();
+	Gtk::Window* toplevel = current_toplevel();
 
-	_maximised = false;
+	if (toplevel) {
+		toplevel->unfullscreen();
+		_maximised = false;
+	}
 }
 
 /**
@@ -4960,7 +4966,6 @@ Editor::first_idle ()
 	
 	if (track_views.size() > 1) {
 		dialog = new MessageDialog (
-			*current_toplevel(),
 			string_compose (_("Please wait while %1 loads visual data."), PROGRAM_NAME),
 			true
 			);
