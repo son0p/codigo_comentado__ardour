@@ -125,10 +125,6 @@ namespace ARDOUR {
 	class ProcessThread;
 }
 
-namespace Gtkmm2ext {
-	class TearOff;
-}
-
 namespace Gtk {
 	class ProgressBar;
 }
@@ -216,7 +212,7 @@ class ARDOUR_UI : public Gtkmm2ext::UI, public ARDOUR::SessionHandlePtr
 	XMLNode* mixer_settings () const;
 	XMLNode* keyboard_settings () const;
 	XMLNode* tearoff_settings (const char*) const;
-
+	
 	void save_ardour_state ();
 	gboolean configure_handler (GdkEventConfigure* conf);
 
@@ -291,8 +287,6 @@ class ARDOUR_UI : public Gtkmm2ext::UI, public ARDOUR::SessionHandlePtr
 	void restore_editing_space ();
 
 	void show_ui_prefs ();
-
-	void update_tearoff_visibility ();
 
 	void setup_profile ();
 	void setup_tooltips ();
@@ -416,15 +410,9 @@ class ARDOUR_UI : public Gtkmm2ext::UI, public ARDOUR::SessionHandlePtr
 
 	std::list<MidiTracer*> _midi_tracer_windows;
 
-	void detach_tearoff (Gtk::Box* parent, Gtk::Widget* contents);
-	void reattach_tearoff (Gtk::Box* parent, Gtk::Widget* contents, int32_t order);
-	void reattach_all_tearoffs ();
-
 	/* Transport Control */
 
-	Gtkmm2ext::TearOff*      transport_tearoff;
 	Gtk::Frame               transport_frame;
-	Gtk::HBox                transport_tearoff_hbox;
 	Gtk::HBox                transport_hbox;
 	Gtk::Fixed               transport_base;
 	Gtk::Fixed               transport_button_base;
