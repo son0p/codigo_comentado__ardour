@@ -1023,6 +1023,8 @@ ARDOUR_UI::starting ()
 		Glib::signal_timeout().connect (sigc::bind (sigc::ptr_fun (_hide_splash), this), 1000);
 	}
 
+	/* all other dialogs are created conditionally */
+
 	return 0;
 }
 
