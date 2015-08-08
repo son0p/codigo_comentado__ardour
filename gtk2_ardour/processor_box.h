@@ -314,8 +314,6 @@ class ProcessorBox : public Gtk::HBox, public PluginInterestedObject, public ARD
 	static void register_actions();
 
   private:
-	static Gtkmm2ext::ActionMap processor_box_actions;
-	
 	/* prevent copy construction */
 	ProcessorBox (ProcessorBox const &);
 
