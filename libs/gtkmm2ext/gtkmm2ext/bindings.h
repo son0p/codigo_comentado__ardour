@@ -76,11 +76,15 @@ class LIBGTKMM2EXT_API MouseButton {
         uint64_t _val;
 };
 
+class LIBGTKMM2EXT_API Bindings;
+
 class LIBGTKMM2EXT_API ActionMap {
   public:
-        ActionMap() {}
-        ~ActionMap() {}
+	ActionMap (std::string const& name);
+	~ActionMap();
 
+	std::string name() const { return _name; }
+	
         Glib::RefPtr<Gtk::ActionGroup> create_action_group (const std::string& group_name);
 
         Glib::RefPtr<Gtk::Action> register_action (Glib::RefPtr<Gtk::ActionGroup> group, const char* name, const char* label);
@@ -105,11 +109,23 @@ class LIBGTKMM2EXT_API ActionMap {
 
 	static std::list<ActionMap*> action_maps;
 	
+	void set_bindings (Bindings*);
+	Bindings* bindings() const { return _bindings; }
+
   private:
+	std::string _name;
+	
 	/* hash for faster lookup of actions by name */
 
 	typedef std::map<std::string, Glib::RefPtr<Gtk::Action> > _ActionMap;
         _ActionMap _actions;
+
+        /* initialized to null; set after a Bindings object has ::associated()
+         * itself with this action map.
+         */
+         
+        Bindings* _bindings;
+        
 };        
 
 class LIBGTKMM2EXT_API Bindings {
