@@ -1014,7 +1014,7 @@ Panner2dWindow::set_width ()
 bool
 Panner2dWindow::on_key_press_event (GdkEventKey* event)
 {
-	return relay_key_press (event, 0);
+	return relay_key_press (event, this);
 }
 
 bool
