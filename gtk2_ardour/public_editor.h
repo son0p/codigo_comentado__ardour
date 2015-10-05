@@ -34,8 +34,8 @@
 #include <gtkmm/actiongroup.h>
 #include <sigc++/signal.h>
 
+#include "evoral/Beats.hpp"
 #include "evoral/Note.hpp"
-#include "evoral/types.hpp"
 
 #include "pbd/statefuldestructible.h"
 
