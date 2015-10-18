@@ -18,8 +18,8 @@
 #include "au_pluginui.h"
 #include "gui_thread.h"
 
-#include "appleutility/CAAudioUnit.h"
-#include "appleutility/CAComponent.h"
+#include "appleutility/CoreAudio/PublicUtility/CAAudioUnit.h"
+#include "appleutility/CoreAudio/PublicUtility/CAComponent.h"
 
 #import <AudioUnit/AUCocoaUIView.h>
 #import <CoreAudioKit/AUGenericView.h>
