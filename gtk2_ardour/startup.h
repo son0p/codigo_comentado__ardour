@@ -77,13 +77,13 @@ class ArdourStartup : public Gtk::Assistant {
 	void setup_first_time_config_page ();
         void config_changed ();
 
-	/* first page */
+	/* primera página */
 	Gtk::FileChooserButton* default_dir_chooser;
 	void default_dir_changed();
 	void setup_first_page ();
 	Gtk::FileChooserButton new_folder_chooser;
 
-	/* monitoring choices */
+	/* seleccionar la opción de monitoreo */
 
 	Gtk::VBox mon_vbox;
 	Gtk::Label monitor_label;
@@ -91,7 +91,7 @@ class ArdourStartup : public Gtk::Assistant {
 	Gtk::RadioButton monitor_via_ardour_button;
 	void setup_monitoring_choice_page ();
 
-	/* monitor section choices */
+	/* lista las opciones */
 
 	Gtk::VBox mon_sec_vbox;
 	Gtk::Label monitor_section_label;
@@ -104,11 +104,11 @@ class ArdourStartup : public Gtk::Assistant {
 	void setup_final_page ();
 	Gtk::Button plugin_disco_button;
 
-	/* always there */
+	/* capa permanente .. fondo? */
 
 	Glib::RefPtr<Pango::Layout> layout;
 
-	/* page indices */
+	/* indices de paginas */
 
 	gint audio_page_index;
 	gint new_user_page_index;
