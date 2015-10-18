@@ -41,7 +41,7 @@
 #include <gtkmm/combobox.h>
 
 #include "ardour/utils.h"
-
+/* esta clase se llama desde donde? y cuando? */
 class EngineControl;
 
 class ArdourStartup : public Gtk::Assistant {
