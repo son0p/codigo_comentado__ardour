@@ -25,8 +25,8 @@
 #include "ardour/coreaudiosource.h"
 #include "ardour/utils.h"
 
-#include <appleutility/CAAudioFile.h>
-#include <appleutility/CAStreamBasicDescription.h>
+#include <appleutility/CoreAudio/PublicUtility/CAExtAudioFile.h>
+#include <appleutility/CoreAudio/PublicUtility/CAStreamBasicDescription.h>
 
 #include <glibmm/fileutils.h>
 
@@ -241,17 +241,16 @@ CoreAudioSource::update_header (framepos_t, struct tm&, time_t)
 int
 CoreAudioSource::get_soundfile_info (string path, SoundFileInfo& _info, string&)
 {
-	FSRef ref;
 	ExtAudioFileRef af = 0;
 	UInt32 size;
 	CFStringRef name;
 	int ret = -1;
 
-	if (FSPathMakeRef ((UInt8*)path.c_str(), &ref, 0) != noErr) {
-		goto out;
-	}
-
-	if (ExtAudioFileOpen(&ref, &af) != noErr) {
+    CFURLRef url = CFURLCreateFromFileSystemRepresentation (kCFAllocatorDefault, (const UInt8*)path.c_str (), strlen (path.c_str ()), false);
+    OSStatus res = ExtAudioFileOpenURL(url, &af);
+    CFRelease (url);
+    
+	if (res != noErr) {
 		goto out;
 	}
 

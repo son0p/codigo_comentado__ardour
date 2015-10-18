@@ -34,7 +34,7 @@
 
 #include <AudioUnit/AudioUnit.h>
 #include <AudioUnit/AudioUnitProperties.h>
-#include "appleutility/AUParamInfo.h"
+#include "appleutility/CoreAudio/PublicUtility/AUParamInfo.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -244,7 +244,7 @@ class LIBARDOUR_API AUPluginInfo : public PluginInfo {
 
 	static PluginInfoList* discover (bool scan_only);
 	static bool au_get_crashlog (std::string &msg);
-	static void get_names (CAComponentDescription&, std::string& name, std::string& maker);
+	static void get_names (AudioComponent&, std::string& name, std::string& maker);
 	static std::string stringify_descriptor (const CAComponentDescription&);
 
 	static int load_cached_info ();

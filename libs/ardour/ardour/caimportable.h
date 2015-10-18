@@ -25,7 +25,7 @@
 #include "ardour/types.h"
 #include "ardour/importable_source.h"
 
-#include <appleutility/CAAudioFile.h>
+#include <appleutility/CoreAudio/PublicUtility/CAExtAudioFile.h>
 
 namespace ARDOUR {
 
@@ -43,7 +43,7 @@ class LIBARDOUR_API CAImportableSource : public ImportableSource {
 	bool clamped_at_unity () const { return false; }
 
    protected:
-	mutable CAAudioFile af;
+	mutable CAExtAudioFile af;
 };
 
 }

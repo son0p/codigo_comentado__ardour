@@ -50,8 +50,8 @@
 #include "ardour/tempo.h"
 #include "ardour/utils.h"
 
-#include "appleutility/CAAudioUnit.h"
-#include "appleutility/CAAUParameter.h"
+#include "appleutility/CoreAudio/PublicUtility/CAAudioUnit.h"
+#include "appleutility/CoreAudio/PublicUtility/CAAUParameter.h"
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
@@ -339,8 +339,8 @@ get_preset_name_in_plist (CFPropertyListRef plist)
 //--------------------------------------------------------------------------
 // general implementation for ComponentDescriptionsMatch() and ComponentDescriptionsMatch_Loosely()
 // if inIgnoreType is true, then the type code is ignored in the ComponentDescriptions
-Boolean ComponentDescriptionsMatch_General(const ComponentDescription * inComponentDescription1, const ComponentDescription * inComponentDescription2, Boolean inIgnoreType);
-Boolean ComponentDescriptionsMatch_General(const ComponentDescription * inComponentDescription1, const ComponentDescription * inComponentDescription2, Boolean inIgnoreType)
+Boolean ComponentDescriptionsMatch_General(const AudioComponentDescription * inComponentDescription1, const AudioComponentDescription * inComponentDescription2, Boolean inIgnoreType);
+Boolean ComponentDescriptionsMatch_General(const AudioComponentDescription * inComponentDescription1, const AudioComponentDescription * inComponentDescription2, Boolean inIgnoreType)
 {
 	if ( (inComponentDescription1 == NULL) || (inComponentDescription2 == NULL) )
 		return FALSE;
@@ -362,17 +362,17 @@ Boolean ComponentDescriptionsMatch_General(const ComponentDescription * inCompon
 //--------------------------------------------------------------------------
 // general implementation for ComponentAndDescriptionMatch() and ComponentAndDescriptionMatch_Loosely()
 // if inIgnoreType is true, then the type code is ignored in the ComponentDescriptions
-Boolean ComponentAndDescriptionMatch_General(Component inComponent, const ComponentDescription * inComponentDescription, Boolean inIgnoreType);
-Boolean ComponentAndDescriptionMatch_General(Component inComponent, const ComponentDescription * inComponentDescription, Boolean inIgnoreType)
+Boolean ComponentAndDescriptionMatch_General(AudioComponent inComponent, const AudioComponentDescription * inComponentDescription, Boolean inIgnoreType);
+Boolean ComponentAndDescriptionMatch_General(AudioComponent inComponent, const AudioComponentDescription * inComponentDescription, Boolean inIgnoreType)
 {
 	OSErr status;
-	ComponentDescription desc;
+	AudioComponentDescription desc;
 
 	if ( (inComponent == NULL) || (inComponentDescription == NULL) )
 		return FALSE;
 
 	// get the ComponentDescription of the input Component
-	status = GetComponentInfo(inComponent, &desc, NULL, NULL, NULL);
+	status = AudioComponentGetDescription (inComponent, &desc);
 	if (status != noErr)
 		return FALSE;
 
@@ -384,28 +384,28 @@ Boolean ComponentAndDescriptionMatch_General(Component inComponent, const Compon
 // determine if 2 ComponentDescriptions are basically equal
 // (by that, I mean that the important identifying values are compared,
 // but not the ComponentDescription flags)
-Boolean ComponentDescriptionsMatch(const ComponentDescription * inComponentDescription1, const ComponentDescription * inComponentDescription2)
+Boolean ComponentDescriptionsMatch(const AudioComponentDescription * inComponentDescription1, const AudioComponentDescription * inComponentDescription2)
 {
 	return ComponentDescriptionsMatch_General(inComponentDescription1, inComponentDescription2, FALSE);
 }
 
 //--------------------------------------------------------------------------
 // determine if 2 ComponentDescriptions have matching sub-type and manufacturer codes
-Boolean ComponentDescriptionsMatch_Loose(const ComponentDescription * inComponentDescription1, const ComponentDescription * inComponentDescription2)
+Boolean ComponentDescriptionsMatch_Loose(const AudioComponentDescription * inComponentDescription1, const AudioComponentDescription * inComponentDescription2)
 {
 	return ComponentDescriptionsMatch_General(inComponentDescription1, inComponentDescription2, TRUE);
 }
 
 //--------------------------------------------------------------------------
 // determine if a ComponentDescription basically matches that of a particular Component
-Boolean ComponentAndDescriptionMatch(Component inComponent, const ComponentDescription * inComponentDescription)
+Boolean ComponentAndDescriptionMatch(AudioComponent inComponent, const AudioComponentDescription * inComponentDescription)
 {
 	return ComponentAndDescriptionMatch_General(inComponent, inComponentDescription, FALSE);
 }
 
 //--------------------------------------------------------------------------
 // determine if a ComponentDescription matches only the sub-type and manufacturer codes of a particular Component
-Boolean ComponentAndDescriptionMatch_Loosely(Component inComponent, const ComponentDescription * inComponentDescription)
+Boolean ComponentAndDescriptionMatch_Loosely(AudioComponent inComponent, const AudioComponentDescription * inComponentDescription)
 {
 	return ComponentAndDescriptionMatch_General(inComponent, inComponentDescription, TRUE);
 }
@@ -533,7 +533,7 @@ AUPlugin::init ()
 	output_channels = -1;
 	{
 		CAComponentDescription temp;
-		GetComponentInfo (comp.get()->Comp(), &temp, NULL, NULL, NULL);
+		AudioComponentGetDescription (comp.get()->Comp(), &temp);
 		CFStringRef compTypeString = UTCreateStringForOSType(temp.componentType);
 		CFStringRef compSubTypeString = UTCreateStringForOSType(temp.componentSubType);
 		CFStringRef compManufacturerString = UTCreateStringForOSType(temp.componentManufacturer);
@@ -2048,10 +2048,10 @@ GetDictionarySInt32Value(CFDictionaryRef inAUStateDictionary, CFStringRef inDict
 }
 
 static OSStatus
-GetAUComponentDescriptionFromStateData(CFPropertyListRef inAUStateData, ComponentDescription * outComponentDescription)
+GetAUComponentDescriptionFromStateData(CFPropertyListRef inAUStateData, AudioComponentDescription * outComponentDescription)
 {
 	CFDictionaryRef auStateDictionary;
-	ComponentDescription tempDesc = {0,0,0,0,0};
+	AudioComponentDescription tempDesc = {0,0,0,0,0};
 	SInt32 versionValue;
 	Boolean gotValue;
 
@@ -2129,11 +2129,11 @@ static bool au_preset_filter (const string& str, void* arg)
 }
 
 bool
-check_and_get_preset_name (Component component, const string& pathstr, string& preset_name)
+check_and_get_preset_name (AudioComponent component, const string& pathstr, string& preset_name)
 {
 	OSStatus status;
 	CFPropertyListRef plist;
-	ComponentDescription presetDesc;
+	AudioComponentDescription presetDesc;
 	bool ret = false;
 
 	plist = load_property_list (pathstr);
@@ -2441,14 +2441,14 @@ AUPluginInfo::au_crashlog (std::string msg)
 void
 AUPluginInfo::discover_by_description (PluginInfoList& plugs, CAComponentDescription& desc)
 {
-	Component comp = 0;
+	AudioComponent comp = 0;
 	au_crashlog(string_compose("Start AU discovery for Type: %1", (int)desc.componentType));
 
-	comp = FindNextComponent (NULL, &desc);
+	comp = AudioComponentFindNext (NULL, &desc);
 
 	while (comp != NULL) {
 		CAComponentDescription temp;
-		GetComponentInfo (comp, &temp, NULL, NULL, NULL);
+		AudioComponentGetDescription (comp, &temp);
 		CFStringRef itemName = NULL;
 
 		{
@@ -2466,13 +2466,13 @@ AUPluginInfo::discover_by_description (PluginInfoList& plugs, CAComponentDescrip
 			if (compManufacturerString != NULL)
 				CFRelease(compManufacturerString);
 		}
-
+/* For undefined reasons Waves plugins sometimes are in blacklist
 		if (is_blacklisted(CFStringRefToStdString(itemName))) {
 			info << string_compose (_("Skipped blacklisted AU plugin %1 "), CFStringRefToStdString(itemName)) << endmsg;
-			comp = FindNextComponent (comp, &desc);
+			comp = AudioComponentFindNext (comp, &desc);
 			continue;
 		}
-
+ */
 		AUPluginInfoPtr info (new AUPluginInfo
 				      (boost::shared_ptr<CAComponentDescription> (new CAComponentDescription(temp))));
 
@@ -2489,7 +2489,7 @@ AUPluginInfo::discover_by_description (PluginInfoList& plugs, CAComponentDescrip
 		case kAudioUnitType_Panner:
 		case kAudioUnitType_OfflineEffect:
 		case kAudioUnitType_FormatConverter:
-			comp = FindNextComponent (comp, &desc);
+			comp = AudioComponentFindNext (comp, &desc);
 			continue;
 
 		case kAudioUnitType_Output:
@@ -2516,7 +2516,7 @@ AUPluginInfo::discover_by_description (PluginInfoList& plugs, CAComponentDescrip
 		}
 
 		au_blacklist(CFStringRefToStdString(itemName));
-		AUPluginInfo::get_names (temp, info->name, info->creator);
+		AUPluginInfo::get_names (comp, info->name, info->creator);
 		ARDOUR::PluginScanMessage(_("AU"), info->name, false);
 		au_crashlog(string_compose("Plugin: %1", info->name));
 
@@ -2528,7 +2528,7 @@ AUPluginInfo::discover_by_description (PluginInfoList& plugs, CAComponentDescrip
 
 		CAComponent cacomp (*info->descriptor);
 
-		if (cacomp.GetResourceVersion (info->version) != noErr) {
+		if (cacomp.GetVersion (info->version) != noErr) {
 			info->version = 0;
 		}
 
@@ -2575,7 +2575,7 @@ AUPluginInfo::discover_by_description (PluginInfoList& plugs, CAComponentDescrip
 
 		au_unblacklist(CFStringRefToStdString(itemName));
 		au_crashlog("Success.");
-		comp = FindNextComponent (comp, &desc);
+		comp = AudioComponentFindNext (comp, &desc);
 		if (itemName != NULL) CFRelease(itemName); itemName = NULL;
 	}
 	au_crashlog(string_compose("End AU discovery for Type: %1", (int)desc.componentType));
@@ -2811,29 +2811,20 @@ AUPluginInfo::load_cached_info ()
 }
 
 void
-AUPluginInfo::get_names (CAComponentDescription& comp_desc, std::string& name, std::string& maker)
+AUPluginInfo::get_names (AudioComponent& comp, std::string& name, std::string& maker)
 {
+    if (comp == NULL) {
+        return;
+    }
 	CFStringRef itemName = NULL;
-
-	// Marc Poirier-style item name
-	CAComponent auComponent (comp_desc);
-	if (auComponent.IsValid()) {
-		CAComponentDescription dummydesc;
-		Handle nameHandle = NewHandle(sizeof(void*));
-		if (nameHandle != NULL) {
-			OSErr err = GetComponentInfo(auComponent.Comp(), &dummydesc, nameHandle, NULL, NULL);
-			if (err == noErr) {
-				ConstStr255Param nameString = (ConstStr255Param) (*nameHandle);
-				if (nameString != NULL) {
-					itemName = CFStringCreateWithPascalString(kCFAllocatorDefault, nameString, CFStringGetSystemEncoding());
-				}
-			}
-			DisposeHandle(nameHandle);
-		}
-	}
-
+  	// Marc Poirier-style item name
+    AudioComponentCopyName (comp, &itemName);
+    
 	// if Marc-style fails, do the original way
 	if (itemName == NULL) {
+        CAComponentDescription comp_desc;
+        AudioComponentGetDescription (comp, &comp_desc);
+
 		CFStringRef compTypeString = UTCreateStringForOSType(comp_desc.componentType);
 		CFStringRef compSubTypeString = UTCreateStringForOSType(comp_desc.componentSubType);
 		CFStringRef compManufacturerString = UTCreateStringForOSType(comp_desc.componentManufacturer);
