@@ -22,6 +22,7 @@ https://github.com/son0p/codigo_comentado__ardour/blob/master/libs/ardour/diskst
     * => leer http://www.rossbencina.com/code/lockfree?q=~rossb/code/lockfree/
     * => leer https://es.wikipedia.org/wiki/Buffer_circular
     * => leer http://www.wannabegeek.com/?p=532
+    
 ### Monitoring
 ### Polarity
 ### Meter Pre
