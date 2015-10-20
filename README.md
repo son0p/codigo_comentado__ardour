@@ -15,6 +15,7 @@ Arquictura de aplicaciones de código abierto donde hay capítulo de Audácity h
 ---
 ## Track Input
 ### Meter Input
+https://github.com/son0p/codigo_comentado__ardour/blob/master/libs/ardour/ardour/meter.h
 ### ARDOUR::Diskstream
 https://github.com/son0p/codigo_comentado__ardour/blob/master/libs/ardour/diskstream.cc
   * Es una manera de mover datos desde y hacia el disco
