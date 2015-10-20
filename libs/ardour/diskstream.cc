@@ -177,6 +177,13 @@ Diskstream::handle_input_change (IOChange change, void * /*src*/)
                    as many diskstreams as need it in one shot. this avoids many repeated
                    takings of the audioengine process lock.
                 */
+                /* en lugar de manejar esto aquí en una manera DS-por-DS 
+                   (Diskstream por Disktream) diferimos al hilo transport/butler de 
+                   la session, y le permitimos manejar? tantos diskstream como sean 
+                   necesarios en una pasada, esto evita tomas repetidas del bloqueo
+                   de procesos de la máquina de audio
+                
+                */
 
                 if (!(input_change_pending.type & change.type)) {
                         input_change_pending.type = IOChange::Type (input_change_pending.type | change.type);
