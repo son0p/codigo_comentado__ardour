@@ -35,6 +35,7 @@ https://github.com/son0p/codigo_comentado__ardour/blob/master/libs/ardour/diskst
 ### Meter Post
 ### Mute / Solo
 ### Pan
+Dada una configuración de entrada/salida se usa [panner_shell.h](https://github.com/son0p/codigo_comentado__ardour/blob/master/libs/ardour/ardour/panner_shell.h) para instanciar y configurar un objeto de paneo apropiado.
 ### Track Output
     
 
